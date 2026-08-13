@@ -23,18 +23,19 @@ Commit messages are normal English prose, whatever style modes are active in the
    git config -f .gitmodules --get submodule.packages/apps/client.url      # upstream
    git config --get submodule.packages/apps/client.ignore                  # detection may be lying
    git -C packages/apps/client symbolic-ref -q --short HEAD                # non-zero ⇒ detached
-   git -C packages/apps/client remote
+   git -C packages/apps/client remote -v                                   # the push URL is the transport
    git -C packages/apps/client status --porcelain
    git -C packages/apps/client diff --cached --stat
-   git status --porcelain=v2 --ignore-submodules=none
+   git remote -v
+   git status --porcelain=v2 --branch --ignore-submodules=none
    ```
 
    An empty `--get` for the branch means the pin follows the remote HEAD; say so rather than
    assuming a name. Read the staged diffs on both sides — the messages in **w2-server messages**
    and **w2-client messages** are written from what actually changed.
 
-   Done when the pinned branch, the upstream URL, the submodule's current branch, and both
-   staging areas are known.
+   Done when the pinned branch, both push destinations and their transports, the submodule's
+   current branch, and both staging areas are known.
 
 2. **Evaluate every gate in Refusals** against the tree as it now stands. A hard refusal ends the
    run with the fix printed and nothing written.
@@ -65,8 +66,8 @@ Commit messages are normal English prose, whatever style modes are active in the
    happened.
 
    ```bash
-   git -C packages/apps/client push -u <remote> <branch>
-   git push --recurse-submodules=check
+   GIT_TERMINAL_PROMPT=0 GIT_ASKPASS=true git -C packages/apps/client push -u <remote> <branch>
+   GIT_TERMINAL_PROMPT=0 GIT_ASKPASS=true git push -u <remote> <branch> --recurse-submodules=check
    ```
 
    Name the destination remote and branch of both pushes in the output before running them, so a
@@ -87,6 +88,7 @@ Commit messages are normal English prose, whatever style modes are active in the
 | Submodule on detached HEAD | `symbolic-ref -q --short HEAD` exits non-zero | **Refuse.** Print `git -C packages/apps/client switch -c <branch>` and stop. A commit made here is unreachable and gc-eligible. |
 | Submodule on the pinned branch | that command prints the pinned branch | **Refuse.** Print the same `switch -c` — the staged index carries over. Branch naming belongs to the human; hand back the command with the name left blank. |
 | Nothing staged on either side | `diff --cached --quiet` exits 0 in both repos | **Refuse.** Report what is unstaged instead of guessing what belongs in the commit. |
+| Push transport cannot authenticate | `GIT_TERMINAL_PROMPT=0 GIT_ASKPASS=true git push --dry-run <remote> <branch>` exits non-zero in either repo — the dry-run authenticates and writes nothing | **Refuse.** Print git's message, then the fix it withholds: `remote set-url --push origin git@github.com:<path>`, with `<path>` taken from the `.gitmodules` URL. Step 5 pushes two repositories in order, so an auth failure discovered there strands the run between them — one round trip each, spent here, is what keeps that from happening. |
 | Submodule dirty but unstaged | porcelain field 3 shows `.M`/`.U` while `diff --cached --quiet` exits 0 | **Report and ask.** Name the files; the human stages inside their own repo. |
 | Gitlink already moved before this run | porcelain v2 field 3 shows `C` at step 1 | **Report and confirm.** The pin bump would import a commit this run did not create. |
 | `submodule.<name>.ignore` is set | the `--get` returns a value | **Warn**, and pass `--ignore-submodules=none` on every status and diff — the default surfaces would be under-reporting. |
@@ -171,6 +173,11 @@ was parsed at the wrong offset. Server side changes with it.
   away local changes.
 - **Fix a bad message forward.** Amending creates a new commit, so amending a client commit whose
   SHA a pin bump already records orphans that gitlink. Before anything is pushed, redo the run.
+- **Let a credential failure be a failure.** Every command that contacts a remote carries
+  `GIT_TERMINAL_PROMPT=0 GIT_ASKPASS=true`. Git consults `GIT_ASKPASS` *before* the terminal, and an
+  editor sets it — VS Code injects `GIT_ASKPASS` and `VSCODE_GIT_IPC_HANDLE` into every terminal it
+  spawns — so without it a wrong transport opens a GUI sign-in dialog rather than returning an exit
+  code the gate can read. `true` answers with an empty credential; the gate reports in under a second.
 - **Pass flags on the command that needs them**, leaving `push.recurseSubmodules` and
   `submodule.recurse` unset — writing those changes every future hand-typed `git push` and
   `git checkout` for everyone with the repo.
