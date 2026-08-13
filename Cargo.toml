@@ -1,0 +1,15 @@
+[workspace]
+members = ["packages/apps/server"]
+resolver = "3"
+
+[workspace.package]
+authors = ["Nelson Faiçal Rechdan <rechdanfr@gmail.com>"]
+categories = []
+description = "https://github.com/open-w2-project/w2-server"
+documentation = "https://github.com/open-w2-project/w2-server"
+edition = "2024"
+homepage = "https://github.com/open-w2-project/w2-server"
+license = "Apache-2.0"
+publish = false
+rust-version = "1.97"
+version = "0.0.0"

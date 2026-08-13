@@ -1,0 +1,12 @@
+{
+  "name": "@app/server",
+  "version": "0.0.0",
+  "license": "Apache-2.0",
+  "scripts": {
+    "dev": "nodemon -w \"./Cargo.toml\" -w \"./src\" -e \"*\" -x \"yarn dev:run\"",
+    "dev:run": "cargo run"
+  },
+  "devDependencies": {
+    "nodemon": "3.1.14"
+  }
+}

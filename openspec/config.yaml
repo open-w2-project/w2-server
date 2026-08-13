@@ -1,0 +1,51 @@
+schema: spec-driven
+
+context: |
+  W2 Server is a With Your Destiny (WYD) game server plus web interface.
+
+  Tech stack: Rust (cargo workspace, `packages/apps/server`), Next.js + React +
+  TypeScript (yarn workspace, `packages/apps/web`). Yarn workspaces at the root.
+
+  `packages/apps/client` is a git submodule of open-w2-project/w2-client: a
+  decompiled C++ Visual Studio client (MSBuild). It is developed alongside the
+  server, but in its own repository — both sides of the wire protocol move.
+  Packet structs and opcodes live in `Projects/TMProject/CPSock.cpp`,
+  `Basedef.h`, `Enums.h`; read the pinned commit before shaping a packet, and
+  again after a bump. Client changes may be authored from this repo in the
+  submodule working tree, but do not commit them there yet: that repo's commit
+  convention is not settled, so edits stay uncommitted for now. The pin bump is
+  a separate commit here whose only content is the new pinned submodule commit.
+  A protocol change that needs both sides lands in w2-client first, then the pin
+  moves here — the server must never target a shape the pinned client does not
+  have.
+
+# Project context (optional)
+# This is shown to AI when creating artifacts.
+# Add your tech stack, conventions, style guides, domain knowledge, etc.
+# Example:
+#   context: |
+#     Tech stack: TypeScript, React, Node.js
+#     We use conventional commits
+#     Domain: e-commerce platform
+
+# Per-artifact rules (optional)
+# Add custom rules for specific artifacts.
+# Example:
+#   rules:
+#     proposal:
+#       - Keep proposals under 500 words
+#       - Always include a "Non-goals" section
+#     tasks:
+#       - Break tasks into chunks of max 2 hours
+
+# Per-operation guidance (optional)
+# Add advisory guidance for how apply and archive work should be conducted.
+# This is separate from artifact rules above.
+# Example:
+#   operations:
+#     apply:
+#       guidance:
+#         - Keep test summaries concise
+#     archive:
+#       guidance:
+#         - Summarize the archive outcome before finishing

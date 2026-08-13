@@ -1,0 +1,9 @@
+# node
+**/node_modules
+
+# next
+**/.next
+**/next-env.d.ts
+
+# rust
+/target

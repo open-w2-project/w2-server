@@ -1,0 +1,4 @@
+[submodule "packages/apps/client"]
+	path = packages/apps/client
+	url = https://github.com/open-w2-project/w2-client.git
+	branch = main

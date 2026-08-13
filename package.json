@@ -1,0 +1,27 @@
+{
+  "name": "w2-server",
+  "version": "0.0.0",
+  "repository": "git@github.com:open-w2-project/w2-server.git",
+  "author": "Nelson Faiçal Rechdan <rechdanfr@gmail.com>",
+  "license": "Apache-2.0",
+  "private": true,
+  "workspaces": {
+    "nohoist": [],
+    "packages": [
+      "packages/apps/server",
+      "packages/apps/web"
+    ]
+  },
+  "scripts": {
+    "dev": "conc --kill-others-on-fail yarn:dev:*",
+    "dev:app:client": "nodemon -w \"packages/apps/client/Projects\" -i \"packages/apps/client/Projects/TMProject/Release/*\" -e \"cpp,h,rc,vcxproj,sln\" --delay 1 -x \"yarn build:app:client\"",
+    "dev:app:server": "yarn workspace @app/server dev",
+    "dev:app:web": "yarn workspace @app/web dev",
+    "build:app:client": "./scripts/build-client.sh"
+  },
+  "devDependencies": {
+    "@fission-ai/openspec": "1.8.0",
+    "concurrently": "10.0.4",
+    "nodemon": "3.1.14"
+  }
+}
