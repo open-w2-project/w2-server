@@ -114,5 +114,5 @@ this repo moves only after task 8 passes.
       the connect with a 164-byte `0x20D` on the wire
 - [x] 8.4 Confirm the client starts normally with the three `.bin` files deleted, and again with them
       present but stale
-- [ ] 8.5 Commit on the `w2-client` branch, then bump the submodule pin here as its own commit via
+- [x] 8.5 Commit on the `w2-client` branch, then bump the submodule pin here as its own commit via
       `/w2-commit`
