@@ -12,12 +12,14 @@ context: |
   Packet structs and opcodes live in `Projects/TMProject/CPSock.cpp`,
   `Basedef.h`, `Enums.h`; read the pinned commit before shaping a packet, and
   again after a bump. Client changes may be authored from this repo in the
-  submodule working tree, but do not commit them there yet: that repo's commit
-  convention is not settled, so edits stay uncommitted for now. The pin bump is
-  a separate commit here whose only content is the new pinned submodule commit.
-  A protocol change that needs both sides lands in w2-client first, then the pin
-  moves here — the server must never target a shape the pinned client does not
-  have.
+  submodule working tree and committed there on a named branch — never on a
+  detached HEAD, never straight onto the pinned branch. The `/w2-commit` skill
+  owns any commit touching both sides and fixes the order: client commit, then
+  server/web commit, then the pin bump alone, then the client push followed by
+  `git push --recurse-submodules=check`. The pin bump is a separate commit here
+  whose only content is the new pinned submodule commit. A protocol change that
+  needs both sides lands in w2-client first, then the pin moves here — the
+  server must never target a shape the pinned client does not have.
 
 # Project context (optional)
 # This is shown to AI when creating artifacts.
