@@ -71,7 +71,7 @@ them as anchors, not addresses.
 
 ## 9. Commit and pin
 
-- [ ] 9.1 Commit in the submodule on the named branch from 1.1.
-- [ ] 9.2 Push the submodule branch.
-- [ ] 9.3 Bump the submodule pin here as its own commit, containing nothing else.
-- [ ] 9.4 Run `git push --recurse-submodules=check`.
+- [x] 9.1 Commit in the submodule on the named branch from 1.1.
+- [x] 9.2 Push the submodule branch.
+- [x] 9.3 Bump the submodule pin here as its own commit, containing nothing else.
+- [x] 9.4 Run `git push --recurse-submodules=check`.
